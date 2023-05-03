@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1682523100 source:c:\users\mathi\onedrive\bureau\projet eceworld\main.c
+1683128721 source:c:\users\mathi\onedrive\bureau\projet eceworld\main.c
 	<stdio.h>
 	<stdlib.h>
 	<allegro.h>
