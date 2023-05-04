@@ -1,0 +1,3 @@
+C:/Users/ptail/Desktop/Ing1/algo/C/Test Allegro/TP2/cmake-build-debug/CMakeFiles/TP2.dir
+C:/Users/ptail/Desktop/Ing1/algo/C/Test Allegro/TP2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ptail/Desktop/Ing1/algo/C/Test Allegro/TP2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
