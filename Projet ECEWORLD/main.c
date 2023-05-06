@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro.h>
-#define NBALLONS 10
+#define NBALLONS 18
 
 typedef struct ballons
 {
@@ -13,80 +13,180 @@ typedef struct ballons
 
 }t_ballons;
 
-
-
-
-
-
-
-
-void vecDepAleaActeur(t_ballons *coincoin)
+typedef struct joueur
 {
-    do
-    {
+    int x,y;
+    BITMAP* cowboy;
+    int nbtickets;
+    char nom[25];
+    int score[9];
+
+}t_joueur;
+
+
+
+
+
+
+
+void vecDepAleaActeur(t_ballons *coincoin,int* choix)
+{
+   if(*choix==1)
+    {do
+    {int z;
+        z=rand()%4;
         coincoin->dx = rand()%4;
         coincoin->dy = rand()%4;
+         if(z==0)
+        { coincoin->dx=- coincoin->dx;
+          coincoin->dy=- coincoin->dy;
+        }
+
+
+
+        if(z==1)
+        { coincoin->dx=- coincoin->dx;
+
+        }
+         if(z==2)
+        { coincoin->dy=- coincoin->dy;
+
+        }
+
     }
-    while (coincoin->dx==0 || coincoin->dy==0);
+    while (coincoin->dx==0 || coincoin->dy==0);}
+   if(*choix==2)
+   {do
+    {
+        coincoin->dx =rand()%5 ;
+
+    }
+    while (coincoin->dx==0) ;}
 }
 
 
 
 
 
-t_ballons * creerballons ()
+t_ballons * creerballons (int*choix)
 {
     t_ballons *ballon;
 
     ballon = (t_ballons*)malloc(1*sizeof(t_ballons));
+    int z=0;
+    if(*choix==1)
+   {ballon->tx = 50;
+    ballon->ty = 50;
     ballon->poulet = load_bitmap("10-ballons-de-baudruche-en-latex-opaque-rouge_88620_1.bmp", NULL);
     ballon->pouleto = create_bitmap(50,50);
     stretch_blit(ballon->poulet, ballon->pouleto,0,0,ballon->poulet->w,ballon->poulet->h,0,0,ballon->pouleto->w,ballon->pouleto->h);
-
-    ballon->tx = 60;
-    ballon->ty = 60;
-
     ballon->x = rand()%(SCREEN_W - ballon->tx);
     ballon->y = rand()%(SCREEN_H - ballon->ty);
+    vecDepAleaActeur(ballon,choix);
+    }
 
-    vecDepAleaActeur(ballon);
+    if(*choix==2)
+    {ballon->tx = 60;
+    ballon->ty = 60;
+    ballon->poulet = load_bitmap("photo planche.bmp", NULL);
+    if (! ballon->poulet)
+    {
+        allegro_message("pas pu trouver images/carte.bmp");
+        exit(EXIT_FAILURE);
+    }
+    ballon->pouleto = create_bitmap(60,60);
+    stretch_blit(ballon->poulet, ballon->pouleto,0,0,ballon->poulet->w,ballon->poulet->h,0,0,ballon->pouleto->w,ballon->pouleto->h);
+    ballon->x = rand()%(SCREEN_W - ballon->tx);
+    vecDepAleaActeur(ballon,choix);
+    z=rand()%5;
+    if(z==0)
+    {ballon->y=125;
 
+    }
+     if(z==1)
+    {ballon->y=185;
+
+    }
+     if(z==2)
+    {ballon->y=245;
+
+    } if(z==3)
+    {ballon->y=305;
+
+    }
+     if(z==4)
+    {ballon->y=365  ;
+
+    }
+
+    }
     return ballon;
 }
 
-void remplirTabActeurs(t_ballons * tab[NBALLONS])
+void remplirTabActeurs(t_ballons * tab[NBALLONS],int* choix)
 {
     // On "accroche" NACTEUR nouveaux acteurs
     // à chaque case du tableau
+
     for (int i=0;i<NBALLONS;i++)
-        tab[i]=creerballons();
+        tab[i]=creerballons(choix);
+
+
+
 }
 
 
-
-void actualiserActeur(t_ballons *coincoin)
-{
+void actualiserActeur(t_ballons *coincoin,int* choix)
+{int z;
     // contrôle des bords : ici on décide de rebondir sur les bords
-    if  (  ( coincoin->x < 0 && coincoin->dx < 0 ) || ( coincoin->x + coincoin->tx > SCREEN_W && coincoin->dx > 0) )
+ if(*choix==1){
+
+        z=rand()%20;
+        if(z==19)
+        {vecDepAleaActeur(coincoin,choix);}
+        if  (  ( coincoin->x < 0 && coincoin->dx < 0 ) || ( coincoin->x + coincoin->tx > SCREEN_W && coincoin->dx > 0) )
         coincoin->dx = -coincoin->dx;
 
-    if  (  ( coincoin->y < 0 && coincoin->dy < 0 ) || ( coincoin->y + coincoin->ty > SCREEN_H && coincoin->dy > 0) )
+        if  (  ( coincoin->y < 0 && coincoin->dy < 0 ) || ( coincoin->y + coincoin->ty > SCREEN_H && coincoin->dy > 0) )
         coincoin->dy = -coincoin->dy;
 
 
-
-   /* if  (  ( coincoin->x < 415  ) && ( coincoin->y < 207  ))
-        coincoin->dx = -coincoin->dx;
-        coincoin->dy = -coincoin->dy;*/
-
-
-
-    // calculer nouvelle position
-    // nouvelle position = position actuelle + deplacement
     coincoin->x = coincoin->x + coincoin->dx;
     coincoin->y = coincoin->y + coincoin->dy;
+    }
+    if(*choix==2)
+    { coincoin->x = coincoin->x + coincoin->dx;
+      if(coincoin->x>SCREEN_W)
+      {
+          coincoin->x=0;
+          z=rand()%5;
+    if(z==0)
+    {coincoin->y=125;
 
-}
+    }
+     if(z==1)
+    {coincoin->y=185;
+
+    }
+     if(z==2)
+    {coincoin->y=245;
+
+    } if(z==3)
+    {coincoin->y=305;
+
+    }
+     if(z==4)
+    {coincoin->y=365  ;
+
+    }
+
+
+      }
+    }
+
+    }
+
+
 
 
 
@@ -129,13 +229,14 @@ int collisionActeurs(t_ballons *a1, t_ballons *a2)
 
 
 // Gérer l'évolution de l'ensemble des acteurs
-void actualiserTabActeurs(t_ballons * tab[NBALLONS])
+void actualiserTabActeurs(t_ballons * tab[NBALLONS],int* choix)
 {
     int i,j,cote;
 
     // Contrôle des collisions : si on entre en collision avec un autre
     // et que la collision tend à nous rapprocher alors on rebondit
-    for (i=0;i<NBALLONS;i++)
+   if(choix==1)
+    { for (i=0;i<NBALLONS;i++)
         for (j=i+1;j<NBALLONS;j++)
             if ( (cote=collisionActeurs(tab[i], tab[j]) ) )
             {
@@ -148,34 +249,27 @@ void actualiserTabActeurs(t_ballons * tab[NBALLONS])
                 if ((cote==3 && tab[j]->dy>0) || (cote==4 && tab[j]->dy<0))
                     tab[j]->dy=-tab[j]->dy;
             }
-
+}
     // Gérer les déplacements habituels...
     for (i=0;i<NBALLONS;i++)
-        actualiserActeur(tab[i]);
+        actualiserActeur(tab[i],choix);
 
 }
 
 
 void tir(t_ballons * tab[NBALLONS],BITMAP*page,BITMAP*reticule)
 {
-
-
     t_ballons * monballon;
-
     draw_sprite(page,reticule,mouse_x,mouse_y);
-
-
-  if (mouse_b&1){
-
+    if (mouse_b&1)
+    {
         for (int i=0;i<NBALLONS;i++)
-        {
-            monballon=tab[i];
-            if ( mouse_x+60 >= monballon->x && mouse_x+60 <= monballon->x + monballon->tx &&
-                 mouse_y+60 >= monballon->y && mouse_y+60 <= monballon->y + monballon->ty )
-            {
+        {monballon=tab[i];
+            if ( mouse_x+30 >= monballon->x && mouse_x+30 <= monballon->x + monballon->tx &&
+                 mouse_y+30 >= monballon->y && mouse_y+30 <= monballon->y + monballon->ty )
+               {
                 tab[i]->x=5000;
-
-            }
+                }
         }
 
     }
@@ -188,43 +282,40 @@ void tir(t_ballons * tab[NBALLONS],BITMAP*page,BITMAP*reticule)
 
 
 
-void deplacements(int* coorx, int* coory)
-{
- if (key[KEY_UP])
-        {* coory=* coory-7;
+void deplacements(t_joueur* joueur,int* choix)
+{int i;
+    if(*choix==0)
+    {
+        i=7;
+    }
+     if(*choix==2)
+    {
+        i=14;
+    }
 
+        if (key[KEY_UP])
+        {joueur->y=joueur->y-i;
         }
-
         if (key[KEY_DOWN])
-        {
-            * coory=* coory+7;
+        {joueur->y=joueur->y+i;
         }
         if (key[KEY_RIGHT])
-        {
-            *coorx=*coorx+7;
+        {joueur->x=joueur->x+i;
         }
-
         if (key[KEY_LEFT])
-        {
-            *coorx=*coorx-7;
+        {joueur->x=joueur->x-i;
         }
-
-        if(* coory>SCREEN_H-50)
-        {
-            * coory=SCREEN_H-50;
+        if(joueur->y>SCREEN_H-50)
+        {joueur->y=SCREEN_H-50;
         }
-        if(* coory<0)
-        {
-        * coory=0;
+        if(joueur->y<0)
+        {joueur->y=0;
         }
-        if(*coorx<0)
-        {*coorx=0;
-
+        if(joueur->x<0)
+        {joueur->x=0;
         }
-
-         if(*coorx>SCREEN_W-30)
-        {*coorx=SCREEN_W-30;
-
+    if(joueur->x>SCREEN_W-30)
+        {joueur->x=SCREEN_W-30;
         }
 
 }
@@ -273,7 +364,7 @@ void finballons(t_ballons* tab[NBALLONS],int* compteur,int* sortie)
         if(tab[i]->x>800 )
         {
             *compteur=*compteur+1;
-          printf("%d\n",*compteur);
+         // printf("%d\n",*compteur);
         }
     }
 
@@ -287,7 +378,7 @@ void finballons(t_ballons* tab[NBALLONS],int* compteur,int* sortie)
 }
 
 
-void mainjeuballons(BITMAP*page)
+void mainjeuballons(BITMAP*page,int* choix)
 {
 clear(page);
 
@@ -320,19 +411,16 @@ clear(page);
         exit(EXIT_FAILURE);
     }
 
-remplirTabActeurs(mesCanards);
+remplirTabActeurs(mesCanards,choix);
         while(*sortie1==0)
         {
-
-
-
 
         // GESTION INTERFACE
 
         clear_bitmap(page);
         blit(fond,page,0,0,0,0,SCREEN_W,SCREEN_H);
         // DETERMINER NOUVELLEs POSITIONs
-        actualiserTabActeurs(mesCanards);
+        actualiserTabActeurs(mesCanards,choix);
 
         // AFFICHAGE NOUVELLEs POSITIONs SUR LE BUFFER
         dessinerTabActeurs(page,mesCanards);
@@ -344,7 +432,7 @@ remplirTabActeurs(mesCanards);
         // ON FAIT UNE PETITE PAUSE
         rest(15);
         }
-        allegro_message("fini");
+
         //free(reticule);
        // free(mesCanards);
 
@@ -354,20 +442,156 @@ remplirTabActeurs(mesCanards);
 
 
 
-
-
-
-
-
-
-void choixattraction(int* coorx, int* coory,BITMAP* page)
+void actuliserdeppersorondin(t_joueur* joueur,t_ballons*tab[NBALLONS],BITMAP*page)
 {
-    if((*coorx >75 && *coorx<155) && (*coory>50 && *coory<150))
-    {//rect(page,75,50,155,150,makecol(255, 0, 0));
-    mainjeuballons(page);
-    *coorx=100;
-    *coory= 160;
+int z=0;
 
+    for( int i=0;i<NBALLONS;i++)
+    {
+        //rect(page,tab[i]->x,tab[i]->y,tab[i]->x+tab[i]->tx,tab[i]->y+tab[i]->ty,makecol(255, 0, 0));
+        if(  ((joueur->x>tab[i]->x-7 && joueur->x<tab[i]->x+tab[i]->tx-7) || (joueur->x+30>tab[i]->x-7 && joueur->x+30<tab[i]->x+tab[i]->tx+7))&&  (joueur->y+37>tab[i]->y-7 && joueur->y+37<tab[i]->y+tab[i]->ty+7) )
+        {   z=1;
+            joueur->x=joueur->x+tab[i]->dx;
+
+
+
+           //rect(page,joueur->x+10,joueur->y,joueur->x+30,joueur->y+36,makecol(255, 0, 0));
+
+           break;
+
+        }
+
+        }
+
+        if((joueur->y+37 >150 && joueur->y+37<425) && z==0   )
+           {
+                joueur->y=550;
+               // rect(page,joueur->x+10,joueur->y,joueur->x+30,joueur->y+36,makecol(0, 255, 0));
+
+           }
+
+
+   printf("%d\n",z);
+
+
+
+}
+
+
+
+
+void mainjeuriviere(BITMAP*page,int *choix)
+{ int test;
+        t_joueur * j;
+        j=(t_joueur*)malloc(sizeof(t_joueur));
+        j->x=400;
+        j->y=670;
+        t_ballons * mesrondins[NBALLONS];
+        remplirTabActeurs(mesrondins,choix);
+        //allegro_message("ici");
+         BITMAP*fond;
+         BITMAP*elargi;
+         fond=load_bitmap("map traversee riviere.bmp",NULL);
+          if (!fond)
+    {
+        allegro_message("pas pu trouver images/carte.bmp");
+        exit(EXIT_FAILURE);
+    }
+     elargi = create_bitmap(800,600);
+    stretch_blit(fond, elargi,0,0,fond->w,fond->h,0,0,elargi->w,elargi->h);
+
+ j->cowboy =load_bitmap("cowboytest.bmp",NULL);
+  if (!j->cowboy)
+    {
+        allegro_message("pas pu trouver images/carte.bmp");
+        exit(EXIT_FAILURE);
+    }
+
+
+
+
+
+         while(j->y>50)
+         { clear_bitmap(page);
+
+           deplacements(j,choix);
+
+           blit(elargi,page,0,0,0,0,SCREEN_W,SCREEN_H);
+
+           actuliserdeppersorondin(j,mesrondins,page);
+           actualiserTabActeurs(mesrondins,choix);
+
+
+           dessinerTabActeurs(page,mesrondins);
+
+
+
+          // rect(page,0,150,800,425,makecol(255, 0, 0));
+           draw_sprite(page,j->cowboy,j->x,j->y);
+
+          // printf("%d\n",mesrondins[3]->x);
+           blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
+           rest(100);
+
+         }
+
+
+
+
+
+}
+
+
+void tourfonc(int*tour)
+{ *tour=*tour+1;
+
+    if (*tour>1)
+    {
+        *tour=0;
+
+    }
+
+}
+
+
+
+void choixattraction(BITMAP* page,int* tour,t_joueur* j1,t_joueur* j2,int*choix)
+{rect(page,15,270,165,355,makecol(255, 0, 0));
+    if((j1->x >75 && j1->x<155) && (j1->y>50 && j1->y<150)||(j2->x >75 && j2->x<155) && (j2->y>50 && j2->y<150))
+    {//rect(page,75,50,155,150,makecol(255, 0, 0));
+    *choix=1;
+    allegro_message("tour de %s",j1->nom);
+    mainjeuballons(page,choix);
+
+    if((j1->x >75 && j1->x<155) && (j1->y>50 && j1->y<150))
+    {j1->x=0;
+    j1->y= 0;}
+    if((j2->x >75 && j2->x<155) && (j2->y>50 && j2->y<150))
+    {j2->x=0;
+    j2->y= 0;
+    }
+    tourfonc(tour);
+    allegro_message("tour de: %s",j2->nom);
+    mainjeuballons(page,choix);
+    *choix=0;
+    }
+
+     if((j1->x >15 && j1->x<165) && (j1->y>270 && j1->y<355 )||(j2->x >15 && j2->x<165) && (j2->y>270 && j2->y<355))
+    {
+    allegro_message("tour de: %s",j1->nom);
+    *choix=2;
+    mainjeuriviere(page,choix);
+    if((j1->x >15 && j1->x<165) && (j1->y>270 && j1->y<355 ))
+    {j1->x=0;
+    j1->y= 0;}
+    if((j2->x >15 && j2->x<165) && (j2->y>270 && j2->y<355))
+    {j2->x=0;
+     j2->y= 0;
+    }
+    allegro_message("tour de: %s",j2->nom);
+    mainjeuriviere(page,choix);
+    tourfonc(tour);
+    *choix=0;
     }
 
 
@@ -384,6 +608,19 @@ void choixattraction(int* coorx, int* coory,BITMAP* page)
 
 int main()
 {
+    t_joueur * joueur1;
+    t_joueur * joueur2;
+    int choi=0;
+    int* choix=&choi;
+
+    printf("joueur 1 entrez votre nom\n");
+    joueur1=(t_joueur*)malloc(sizeof(t_joueur));
+    fgets(joueur1->nom, 25, stdin);
+
+    printf("joueur 2 entrez votre nom\n");
+    joueur2=(t_joueur*)malloc(sizeof(t_joueur));
+    fgets(joueur2->nom, 25, stdin);
+
     BITMAP *page;
     BITMAP *carte;
     BITMAP *cowboy1;
@@ -393,14 +630,15 @@ int main()
     allegro_init();
     install_keyboard();
     install_mouse();
-    int coorx=400;
-    int coory=475;
-    int* coorx1=&coorx;
-    int* coory1=&coory;
-    int coorx2=0;
-    int coory2=0;
-    int* coorx3=&coorx2;
-    int* coory3=&coory2;
+    joueur1->x=400;
+    joueur1->y=475;
+    joueur2->x=350;
+    joueur2->y=475;
+
+
+    int tour=0;
+    int* tour1=&tour;
+
     set_color_depth(desktop_color_depth());
     if (set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
     {
@@ -408,7 +646,20 @@ int main()
         allegro_exit();
         exit(EXIT_FAILURE);
     }
+ joueur1->cowboy=load_bitmap("cowboytest.bmp",NULL);
+    if (!joueur1->cowboy)
+    {
+        allegro_message("pas pu trouver images/cowboy1.bmp");
+        exit(EXIT_FAILURE);
+    }
 
+
+    joueur2->cowboy=load_bitmap("cowboytest.bmp",NULL);
+    if (! joueur2->cowboy)
+    {
+        allegro_message("pas pu trouver images/cowboy1.bmp");
+        exit(EXIT_FAILURE);
+    }
 
     // CREATION DU BUFFER D'AFFICHAGE � la taille de l'�cran
     page=create_bitmap(SCREEN_W,SCREEN_H);
@@ -419,23 +670,35 @@ int main()
         allegro_message("pas pu trouver images/carte.bmp");
         exit(EXIT_FAILURE);
     }
-    cowboy1=load_bitmap("cowboytest.bmp",NULL);
-    if (!cowboy1)
-    {
-        allegro_message("pas pu trouver images/cowboy1.bmp");
-        exit(EXIT_FAILURE);
-    }
+
     clear_bitmap(page);
+
+
+
+
 
 
     while(!key[KEY_ESC])
     {
         clear_bitmap(page);
         blit(carte,page,0,0,0,0,SCREEN_W,SCREEN_H);
-        deplacements(coorx1,coory1);
-        choixattraction(coorx1,coory1,page);
+
+
+
+        choixattraction(page,tour1,joueur1,joueur2,choix);
+          if(*tour1==1)
+       {deplacements(joueur1,choix);
+
+       }
+
+        if(*tour1==0)
+       {deplacements(joueur2,choix);
+
+       }
+
        // delimitations(page);
-        draw_sprite(page,cowboy1, *coorx1 ,*coory1);
+        draw_sprite(page,joueur1->cowboy,joueur1->x,joueur1->y);
+        draw_sprite(page,joueur2->cowboy,joueur2->x,joueur2->y);
         blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
 
         rest(50);
