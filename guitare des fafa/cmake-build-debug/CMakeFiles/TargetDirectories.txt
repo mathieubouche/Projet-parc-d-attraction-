@@ -1,0 +1,3 @@
+C:/Users/ptail/Desktop/guitare des fafa/cmake-build-debug/CMakeFiles/piano_tiles.dir
+C:/Users/ptail/Desktop/guitare des fafa/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ptail/Desktop/guitare des fafa/cmake-build-debug/CMakeFiles/rebuild_cache.dir
